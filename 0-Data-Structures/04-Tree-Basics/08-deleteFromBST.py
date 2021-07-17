@@ -1,40 +1,52 @@
-def deleteFromBST(t, queries):        
+#
+# Binary trees are already defined with this interface:
+# class Tree(object):
+#   def __init__(self, x):
+#     self.value = x
+#     self.left = None
+#     self.right = None
+def deleteFromBST(t, queries):
+
+    def findRightMostNode(focusingNode, parent):
+        # found the rightMostNode
+        if focusingNode.right == None:
+            parent.right = focusingNode.left
+            return focusingNode
+        else:
+            return findRightMostNode(focusingNode.right, focusingNode)
+    
+    def updateNode(oldNode, newNode, parent):
+        if parent.left == oldNode:
+            parent.left = newNode
+        else:
+            parent.right = newNode
+    
+    
     def deleteFromBSTHelper(node, root, query):
         if node == None:
-            return
+            return 
         if node.value == query:
             if node.left == None:
-                if root.left == node:
-                    root.left = node.right
-                else:
-                    root.right = node.right
+                updateNode(node, node.right, root)
             else:
-                rightMostNode = findRightMost(node.left, node)
-                rightMostNode.right = node.right
-                if node.left !=  rightMostNode:
-                    rightMostNode.left = node.left
-                if root.left == node:
-                    root.left = rightMostNode
+                leftNode = node.left
+                if leftNode.right == None:
+                    leftNode.right = node.right
+                    updateNode(node, leftNode, root)
                 else:
-                    root.right = rightMostNode
+                    rightMostNode = findRightMostNode(node.left, node)
+                    rightMostNode.right = node.right
+                    rightMostNode.left = node.left
+                    updateNode(node, rightMostNode, root)
+        
         elif node.value > query:
             deleteFromBSTHelper(node.left, node, query)
         else:
             deleteFromBSTHelper(node.right, node, query)
-
-    def findRightMost(node, root):
-        if node.right == None:
-            if(root.right == node):
-                root.right = node.left
-            return node
-        else:
-            if(root.left == node):
-                return findRightMost(node.right, root.left)
-            else:
-                return findRightMost(node.right, root.right)
-            
+    
     dummy = Tree(-2e9)
     dummy.left = t
-    for key in queries:
-        deleteFromBSTHelper(dummy.left, dummy, key)
+    for q in queries:
+        deleteFromBSTHelper(dummy.left, dummy, q)
     return dummy.left
+            
