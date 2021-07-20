@@ -1,21 +1,12 @@
-int firstDuplicate(vector<int>& nums) {
-    if (nums.size() > 1)
-	{
-		int tortoise = nums[0];
-        int hare = nums[0];
-        do {
-        tortoise = nums[tortoise];
-        hare = nums[nums[hare]];
-        } while (tortoise != hare);
-
-        // Find the "entrance" to the cycle.
-        tortoise = nums[0];
-        while (tortoise != hare) {
-            tortoise = nums[tortoise];
-            hare = nums[hare];
+int firstDuplicate(vector<int> a) {
+    for(int num : a){
+        int idx = abs(num) - 1;
+        if(a[idx] < 0){
+            return abs(num);
         }
-
-        return hare;
-	}
-	return -1;
+        else{
+            a[idx] = -a[idx];
+        }
+    }
+    return -1;
 }
